@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastnameController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  TextEditingController passwordcheckController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
 
   @override
@@ -171,32 +172,55 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: passwordController,
               decoration: InputDecoration(hintText: "Password"),
+              obscureText: true,
             ),
-            FlatButton(
-              color: Colors.green,
-              child: Text("Sign up for gods sake"),
-              onPressed: () {
-                if (usernameController.text != null ||
-                    passwordController.text != null ||
-                    emailController.text != null ||
-                    firstNameController.text != null ||
-                    lastnameController.text != null) {
-                  userBloc
-                      .registerUser(
-                          usernameController.text,
-                          firstNameController.text ?? "",
-                          lastnameController.text ?? "",
-                          emailController.text,
-                          passwordController.text,
-                          phoneController.text)
-                      .then((_) {
-                    Navigator.push(
+            TextField(
+              controller: passwordcheckController,
+              decoration: InputDecoration(hintText: "Confirm Password"),
+              obscureText: true,
+            ),
+            Row(
+              children: [
+                Padding(padding: EdgeInsets.symmetric()),
+                FlatButton(
+                  color: Colors.red,
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.pop(
                       context,
                       MaterialPageRoute(builder: (context) => getSigninPage()),
                     );
-                  });
-                }
-              },
+                  },
+                ),
+                FlatButton(
+                  color: Colors.green,
+                  child: Text("Send"),
+                  onPressed: () {
+                    if (usernameController.text != null ||
+                        passwordController.text != null ||
+                        passwordController == passwordcheckController ||
+                        emailController.text != null ||
+                        firstNameController.text != null ||
+                        lastnameController.text != null) {
+                      userBloc
+                          .registerUser(
+                              usernameController.text,
+                              firstNameController.text ?? "",
+                              lastnameController.text ?? "",
+                              emailController.text,
+                              passwordController.text,
+                              phoneController.text)
+                          .then((_) {
+                        Navigator.pop(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => getSigninPage()),
+                        );
+                      });
+                    }
+                  },
+                ),
+              ],
             )
           ],
         ),

@@ -1,21 +1,12 @@
 import 'dart:io';
-//import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-//import 'package:image_picker/image_picker.dart';
 import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
 import 'package:my_stock/models/classes/product.dart';
 import 'package:my_stock/models/classes/user.dart';
-//import 'package:my_stock/models/widgets/EventsList_widget.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:my_stock/models/widgets/Products_list.dart';
 import 'package:my_stock/models/widgets/Stocks_list.dart';
-//import 'package:my_stock/models/widgets/drawer.dart';
-//import 'package:my_stock/models/widgets/taskSchedule.dart';
-//import 'package:my_stock/UI/Donforget/First_list.dart';
-//import 'package:my_stock/models/global.dart';
 import 'UI/LoginPage/Login_Page.dart';
-//import 'bloc/blocs/user_bloc_provider.dart';
-//import 'package:my_stock/models/widgets/taskSchedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/widgets/drawer.dart';
@@ -67,9 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           apiKey = snapshot.data;
-          stockBlock = StockBlock(apiKey, userID);
-          print(apiKey);
-          print(userID);
+          //stockBlock = StockBlock(apiKey, userID);
+
         } else {
           print("No Data");
         }

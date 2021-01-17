@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
+import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:my_stock/models/classes/product.dart';
 import 'package:my_stock/models/classes/stockuser.dart';
 
@@ -15,10 +16,15 @@ class _StockListState extends State<StockList> {
   List<StockUser> stocksList = [];
   List<Products> productsList = [];
   StockBlock stockBloc;
+  StockUser stocks;
+  Products products;
+  ProductsBlock productsBlock;
+  Repository _repository = Repository();
 
   @override
   void initState() {
     stockBloc = StockBlock(widget.apiKey, widget.userID);
+    productsBlock = ProductsBlock();
   }
 
   @override
@@ -29,40 +35,50 @@ class _StockListState extends State<StockList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white,
         child: StreamBuilder(
-          stream: stockBloc.getStocks,
-          initialData: [],
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot != null) {
-              if (snapshot.data.length >= 0) {
-                return _buildListSimple(context, snapshot.data);
-              }
-            } else if (snapshot.hasError) {
-              return Container(
-                child: Text("Error talk with the support"),
-              );
-            }
-            return CircularProgressIndicator();
-          },
-        ));
+      stream: stockBloc.getStocks,
+      initialData: stocksList,
+      builder: (context, snapshot1) {
+        if (snapshot1.hasData && snapshot1 != null) {
+          if (snapshot1.data.length >= 0) {
+            return StreamBuilder(
+                stream: productsBlock.getProducts,
+                initialData: productsList,
+                builder: (context, snapshot2) {
+                  return _buildListTile(
+                      context, snapshot1.data, snapshot2.data);
+                });
+          }
+        } else if (snapshot1.hasError) {
+          return Container(
+            child: Text("Error talk with the support"),
+          );
+        }
+        return CircularProgressIndicator();
+      },
+    ));
   }
 
-  /* Widget _buildListTile(BuildContext context, Task item) {
-    return ListTile(
-      key: Key(item.taskId.toString()),
-      title: EventsList(
-        title: item.title,
-      ),
-    );
-  } */
+  _buildListTile(BuildContext context, List<StockUser> stocksList,
+      List<Products> productsList) {
+    var mapedProdu = Map();
+    for (stocks in stocksList) {
+      for (products in productsList) {
+        if (stocks.productID == products.id)
+          mapedProdu[stocks.id] = products.title;
+      }
+    }
+    print(mapedProdu.entries);
+    return _buildListSimple(context, mapedProdu, stocksList, productsList);
+  }
 
-  Widget _buildListSimple(BuildContext context, List<StockUser> stocksList) {
+  Widget _buildListSimple(BuildContext context, Map mapedProdu,
+      List<StockUser> stocksList, List<Products> productsList) {
     return Scrollbar(
       child: RefreshIndicator(
         child: ListView.builder(
             padding: EdgeInsets.only(top: 50),
-            itemCount: stocksList.length,
+            itemCount: mapedProdu.length,
             itemBuilder: (context, index) {
               return Card(
                 elevation: 50,
@@ -79,17 +95,22 @@ class _StockListState extends State<StockList> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
+                                      FlatButton(
+                                        onPressed: () {},
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Icon(
-                                              Icons.adjust,
+                                              Icons.info,
                                               color: Colors.amber,
                                               size: 50,
                                             )),
                                       ),
-                                      Text(stocksList[index].id.toString()),
+                                      Text(mapedProdu.entries
+                                          .elementAt(index)
+                                          .value),
                                     ],
                                   ),
                                   Row(

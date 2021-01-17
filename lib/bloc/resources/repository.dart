@@ -10,13 +10,15 @@ class Repository {
   Future<User> registerUser(String username, String firstname, String lastname,
           String email, String password, String phone) =>
       apiProvider.registerUser(
-          username, firstname, lastname, password, email, phone);
+          username, firstname, lastname, email, password, phone);
 
   Future singinUser(String username, String password, String apiKey) =>
       apiProvider.signinUser(username, password, apiKey);
 
   Future getUserInfo(String apiKey, String username) =>
       apiProvider.getUserInfo(apiKey, username);
+
+  Future getProductInfo(int productID) => apiProvider.getProductInfo(productID);
 
   Future getUserStock(String apiKey, int userID) =>
       apiProvider.getUserStock(apiKey, userID);
@@ -38,5 +40,5 @@ class Repository {
     apiProvider.addProduct(product, product, int.parse(price));
   }
 
-  Future getProducts() => apiProvider.getProducts();
+  Future<List<Products>> getProducts() async => await apiProvider.getProducts();
 }

@@ -30,7 +30,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         } else {
           print("No User");
         }
-        return user != null ? buildDraw() : CircularProgressIndicator();
+        return user != null ? buildDraw() : closeUser();
       },
     );
   }
@@ -70,6 +70,24 @@ class _DrawerMenuState extends State<DrawerMenu> {
               ),
             ),
           ),
+          ListTile(
+            title: Text('Log Out'),
+            leading: Icon(Icons.directions_walk),
+            onTap: () {
+              widget.logout();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget closeUser() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
           ListTile(
             title: Text('Log Out'),
             leading: Icon(Icons.directions_walk),
