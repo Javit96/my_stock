@@ -3,6 +3,7 @@ import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:my_stock/models/classes/product.dart';
 import 'package:my_stock/models/classes/stockuser.dart';
+import 'package:intl/intl.dart';
 
 class StockList extends StatefulWidget {
   final String apiKey;
@@ -62,17 +63,22 @@ class _StockListState extends State<StockList> {
   _buildListTile(BuildContext context, List<StockUser> stocksList,
       List<Products> productsList) {
     var mapedProdu = Map();
+    var mapedProdu2 = Map();
     for (stocks in stocksList) {
       for (products in productsList) {
-        if (stocks.productID == products.id)
+        if (stocks.productID == products.id) {
           mapedProdu[stocks.id] = products.title;
+          mapedProdu2[stocks] = products;
+          print(stocks.buyDate);
+        }
       }
     }
     print(mapedProdu.entries);
-    return _buildListSimple(context, mapedProdu, stocksList, productsList);
+    return _buildListSimple(
+        context, mapedProdu, mapedProdu2, stocksList, productsList);
   }
 
-  Widget _buildListSimple(BuildContext context, Map mapedProdu,
+  Widget _buildListSimple(BuildContext context, Map mapedProdu, Map mapedProdu2,
       List<StockUser> stocksList, List<Products> productsList) {
     return Scrollbar(
       child: RefreshIndicator(
@@ -95,18 +101,28 @@ class _StockListState extends State<StockList> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      FlatButton(
-                                        onPressed: () {},
+                                      // ignore: missing_required_param
+                                      RaisedButton(
+                                        child: Icon(
+                                          Icons.info,
+                                          color: Colors.amber,
+                                          size: 50,
+                                        ),
+                                        onPressed: () {
+                                          infoStock(
+                                              mapedProdu2.entries
+                                                  .elementAt(index)
+                                                  .key,
+                                              mapedProdu2.entries
+                                                  .elementAt(index)
+                                                  .value);
+                                        },
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Icon(
-                                              Icons.info,
-                                              color: Colors.amber,
-                                              size: 50,
-                                            )),
+                                          alignment: Alignment.centerLeft,
+                                        ),
                                       ),
                                       Text(mapedProdu.entries
                                           .elementAt(index)
@@ -117,8 +133,14 @@ class _StockListState extends State<StockList> {
                                     children: <Widget>[
                                       FlatButton(
                                         onPressed: () {
-                                          stockBloc.deleteStock(widget.apiKey,
-                                              stocksList[index].id);
+                                          deleteStock(
+                                              widget.apiKey,
+                                              mapedProdu2.entries
+                                                  .elementAt(index)
+                                                  .key,
+                                              mapedProdu2.entries
+                                                  .elementAt(index)
+                                                  .value);
                                           stocksList.removeAt(index);
                                         },
                                         child: Align(
@@ -142,6 +164,45 @@ class _StockListState extends State<StockList> {
             }),
         onRefresh: _handleRefresh,
       ),
+    );
+  }
+
+  Future<void> infoStock(StockUser stockList, Products product) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(product.title),
+          content:
+              Text("Quantity: " + stockList.stock.toString() + "\n" + "The "),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteStock(
+      apiKey, StockUser stockList, Products product) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Are you sure you want to delete this task?"),
+          content: Text(product.title),
+          actions: <Widget>[
+            new FlatButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            new FlatButton(
+                child: new Text("Accept"),
+                onPressed: () {
+                  stockBloc.deleteStock(apiKey, stockList.id);
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
     );
   }
 
