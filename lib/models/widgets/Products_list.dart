@@ -8,7 +8,7 @@ import 'package:my_stock/models/widgets/drawer.dart';
 
 class ProductsList extends StatefulWidget {
   final String apiKey;
-  final int userID;
+  final String userID;
   ProductsList({this.apiKey, this.userID});
   @override
   _ProductsListState createState() => _ProductsListState();

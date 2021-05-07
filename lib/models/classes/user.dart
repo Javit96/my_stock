@@ -9,7 +9,7 @@ class User {
   String phone;
   String password;
   String api_key;
-  int userID;
+  String userID;
 
   User(this.userID, this.lastname, this.username, this.firstname, this.email,
       this.password, this.phone, this.api_key);

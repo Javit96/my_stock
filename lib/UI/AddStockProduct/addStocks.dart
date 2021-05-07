@@ -9,7 +9,7 @@ import '../../main.dart';
 class AddStocksPage extends StatefulWidget {
   final String apiKey;
   final Products products;
-  final int userID;
+  final String userID;
 
   const AddStocksPage({Key key, this.apiKey, this.userID, this.products})
       : super(key: key);

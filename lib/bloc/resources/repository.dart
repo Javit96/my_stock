@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:my_stock/models/classes/product.dart';
 
-import 'api.dart';
+import 'package:my_stock/bloc/resources/api.dart';
 import 'package:my_stock/models/classes/user.dart';
 
 class Repository {
@@ -20,7 +20,7 @@ class Repository {
 
   Future getProductInfo(int productID) => apiProvider.getProductInfo(productID);
 
-  Future getUserStock(String apiKey, int userID) =>
+  Future getUserStock(String apiKey, String userID) =>
       apiProvider.getUserStock(apiKey, userID);
 
   Future<Null> deleteStock(String apiKey, int stockId) =>
@@ -31,8 +31,8 @@ class Repository {
 
   Future<Null> addUserStock(String apiKey, String stock, DateTime buyDate,
       String userID, String productID) async {
-    apiProvider.addUserStock(apiKey, int.parse(stock), buyDate,
-        int.parse(userID), int.parse(productID));
+    apiProvider.addUserStock(
+        apiKey, int.parse(stock), buyDate, userID, int.parse(productID));
   }
 
   Future<Products> addProduct(

@@ -31,11 +31,11 @@ class StockBlock {
   final _repository = Repository();
   final _stockSubject = BehaviorSubject<List<StockUser>>();
   String apiKey;
-  int userID;
+  String userID;
 
   var _stocks = <StockUser>[];
 
-  StockBlock(String apiKey, int userID) {
+  StockBlock(String apiKey, String userID) {
     this.apiKey = apiKey;
     this.userID = userID;
     _updateStocks(apiKey, userID).then((_) {
@@ -45,7 +45,7 @@ class StockBlock {
 
   Stream<List<StockUser>> get getStocks => _stockSubject.stream;
 
-  Future<Null> _updateStocks(String apiKey, int userID) async {
+  Future<Null> _updateStocks(String apiKey, String userID) async {
     _stocks = await _repository.getUserStock(apiKey, userID);
   }
 

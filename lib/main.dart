@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StockBlock stockBlock;
   UserBloc userBloc;
   String apiKey = "";
-  int userID;
+  String userID;
   String username = "";
   User user;
   Products products;
@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int userID = prefs.getInt("UserID"); //key
+    String userID = prefs.getString("UserID"); //key
 
     return userID;
   }

@@ -1,5 +1,5 @@
 import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
-import 'package:my_stock/bloc/resources/api.dart';
+import '../../bloc/resources/api.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:my_stock/models/classes/user.dart';
 import 'package:flutter/material.dart';

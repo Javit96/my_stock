@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 class StockList extends StatefulWidget {
   final String apiKey;
-  final int userID;
+  final String userID;
   StockList({this.apiKey, this.userID});
   @override
   _StockListState createState() => _StockListState();
