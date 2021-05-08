@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_stock/UI/LoginPage/SingUp.dart';
 import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -130,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => getSignupPage()),
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
                     );
                   },
                 ),
