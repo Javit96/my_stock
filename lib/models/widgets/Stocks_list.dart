@@ -87,80 +87,85 @@ class _StockListState extends State<StockList> {
             itemCount: mapedProdu.length,
             itemBuilder: (context, index) {
               return Card(
-                elevation: 50,
-                child: Padding(
-                  padding: EdgeInsets.all(7),
-                  child: Stack(children: <Widget>[
-                    Align(
-                      alignment: Alignment.centerRight,
+                  elevation: 50,
+                  child: Padding(
+                      padding: EdgeInsets.all(10),
                       child: Stack(
                         children: <Widget>[
-                          Padding(
-                              padding: const EdgeInsets.only(left: 10, top: 5),
-                              child: Column(
-                                children: <Widget>[
-                                  Row(
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Stack(children: <Widget>[
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 10, top: 5),
+                                  child: Row(
                                     children: <Widget>[
-                                      // ignore: missing_required_param
-                                      RaisedButton(
-                                        child: Icon(
-                                          Icons.info,
-                                          color: Colors.amber,
-                                          size: 50,
-                                        ),
-                                        onPressed: () {
-                                          infoStock(
-                                              mapedProdu2.entries
-                                                  .elementAt(index)
-                                                  .key,
-                                              mapedProdu2.entries
-                                                  .elementAt(index)
-                                                  .value);
-                                        },
+                                      Column(
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: const Icon(Icons.info),
+                                            color: Colors.amber,
+                                            iconSize: 35,
+                                            onPressed: () {
+                                              infoStock(
+                                                  mapedProdu2.entries
+                                                      .elementAt(index)
+                                                      .key,
+                                                  mapedProdu2.entries
+                                                      .elementAt(index)
+                                                      .value);
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                        ),
+                                      Column(
+                                        children: [
+                                          SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  250,
+                                              child: Text(
+                                                mapedProdu.entries
+                                                    .elementAt(index)
+                                                    .value,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.fade,
+                                                softWrap: false,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 20.0),
+                                              )),
+                                        ],
                                       ),
-                                      Text(mapedProdu.entries
-                                          .elementAt(index)
-                                          .value),
+                                      Column(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            color: Colors.amber,
+                                            iconSize: 35,
+                                            onPressed: () {
+                                              deleteStock(
+                                                  widget.apiKey,
+                                                  mapedProdu2.entries
+                                                      .elementAt(index)
+                                                      .key,
+                                                  mapedProdu2.entries
+                                                      .elementAt(index)
+                                                      .value);
+                                              stocksList.removeAt(index);
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ],
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        onPressed: () {
-                                          deleteStock(
-                                              widget.apiKey,
-                                              mapedProdu2.entries
-                                                  .elementAt(index)
-                                                  .key,
-                                              mapedProdu2.entries
-                                                  .elementAt(index)
-                                                  .value);
-                                          stocksList.removeAt(index);
-                                        },
-                                        child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.amber,
-                                              size: 20,
-                                            )),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ))
+                                  )),
+                            ]),
+                          ),
                         ],
-                      ),
-                    )
-                  ]),
-                ),
-              );
+                      )));
             }),
         onRefresh: _handleRefresh,
       ),

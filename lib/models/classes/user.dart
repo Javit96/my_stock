@@ -18,7 +18,7 @@ class User {
     return User(
         parsedJson['userID'],
         parsedJson['LastName'],
-        parsedJson['username'],
+        parsedJson['userName'],
         parsedJson['FirstMidName'],
         parsedJson['email'],
         parsedJson['password'],

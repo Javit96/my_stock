@@ -1,4 +1,7 @@
+import 'package:my_stock/UI/LoginPage/Login_Page.dart';
 import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
+import 'package:my_stock/main.dart';
+import 'package:my_stock/models/widgets/Stocks_list.dart';
 import '../../bloc/resources/api.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:my_stock/models/classes/user.dart';
@@ -71,10 +74,27 @@ class _DrawerMenuState extends State<DrawerMenu> {
             ),
           ),
           ListTile(
+            title: Text('Stock Page'),
+            leading: Icon(Icons.home),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('Settings'),
+            leading: Icon(Icons.settings),
+            onTap: () {},
+          ),
+          ListTile(
             title: Text('Log Out'),
             leading: Icon(Icons.directions_walk),
             onTap: () {
               widget.logout();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
             },
           ),
         ],

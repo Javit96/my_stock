@@ -136,12 +136,20 @@ class _ProductsListState extends State<ProductsList> {
                                   ),
                                   Column(
                                     children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child:
-                                                Text(productList[index].title)),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                250,
+                                        child: Text(
+                                          productList[index].title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.fade,
+                                          softWrap: false,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 20.0),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -151,18 +159,14 @@ class _ProductsListState extends State<ProductsList> {
                                         padding:
                                             const EdgeInsets.only(left: 15),
                                       ),
-                                      FlatButton(
+                                      IconButton(
+                                        icon: const Icon(Icons.delete),
+                                        color: Colors.amber,
+                                        iconSize: 35,
                                         onPressed: () {
                                           deleteTask(productList[index].title,
                                               productList[index].id);
                                         },
-                                        child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.amber,
-                                              size: 50,
-                                            )),
                                       ),
                                     ],
                                   ),
@@ -172,17 +176,13 @@ class _ProductsListState extends State<ProductsList> {
                                         padding:
                                             const EdgeInsets.only(left: 15),
                                       ),
-                                      FlatButton(
+                                      IconButton(
+                                        icon: const Icon(Icons.add),
+                                        color: Colors.amber,
+                                        iconSize: 35,
                                         onPressed: () {
                                           _showMyDialog(productList[index]);
                                         },
-                                        child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Colors.amber,
-                                              size: 50,
-                                            )),
                                       ),
                                     ],
                                   )
