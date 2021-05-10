@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
+import 'package:my_stock/UI/LoginPage/Login_Page.dart';
+import 'package:my_stock/bloc/blocks/user_bloc_provider.dart';
+import 'package:my_stock/main.dart';
 import 'package:my_stock/models/classes/user.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -71,7 +74,6 @@ class _PasswordFieldState extends State<PasswordField> with RestorationMixin {
       key: widget.fieldKey,
       //restorationId: 'password_text_field',
       obscureText: _obscureText.value,
-      maxLength: 8,
       onSaved: widget.onSaved,
       validator: widget.validator,
       onFieldSubmitted: widget.onFieldSubmitted,
@@ -98,6 +100,7 @@ class _PasswordFieldState extends State<PasswordField> with RestorationMixin {
 
 class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
   User person;
+  UserBloc userBloc;
 
   FocusNode _firstname,
       _lastname,
@@ -152,23 +155,32 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState<String>> _passwordFieldKey =
       GlobalKey<FormFieldState<String>>();
-  /*final _UsNumberTextInputFormatter _phoneNumberFormatter =
-      _UsNumberTextInputFormatter();
-  */
-  /*void _handleSubmitted() {
+  /* final _ArNumberTextInputFormatter _phoneNumberFormatter =
+      _ArNumberTextInputFormatter();
+*/
+  void _handleSubmitted() {
     final form = _formKey.currentState;
     if (!form.validate()) {
       _autoValidateModeIndex.value =
           AutovalidateMode.always.index; // Start validating on every change.
       showInSnackBar(
-        GalleryLocalizations.of(context).demoTextFieldFormErrors,
+        "Antes de enviar, corrige los errores marcados con rojo.",
       );
     } else {
       form.save();
-      showInSnackBar(GalleryLocalizations.of(context)
-          .demoTextFieldNameHasPhoneNumber(person.firstname, person.phone));
+      userBloc
+          .registerUser(person.username, person.firstname, person.lastname,
+              person.email, person.password, person.phone)
+          .then((_) {
+        Navigator.pop(
+          context,
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
+      });
+      /* showInSnackBar(GalleryLocalizations.of(context)
+          .demoTextFieldNameHasPhoneNumber(person.firstname, person.phone)); */
     }
-  }*/
+  }
 
   String _validateName(String value) {
     if (value.isEmpty) {
@@ -182,9 +194,9 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
   }
 
   String _validatePhoneNumber(String value) {
-    final phoneExp = RegExp(r'^\(\d\d\) (\d\d\d) \d\d\d\d\-\d\d\d\d$');
+    final phoneExp = RegExp(r'^\d\d\d\d\d\d\d\d\d\d$');
     if (!phoneExp.hasMatch(value)) {
-      return "(##) (###) ####-#### - Ingresa un número de teléfono de AR.";
+      return "(##) (##)####-#### - Ingresa un número de teléfono de AR.";
     }
     return null;
   }
@@ -274,21 +286,21 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
                   icon: const Icon(Icons.phone),
                   hintText: "¿Cómo podemos comunicarnos contigo?",
                   labelText: "Número de teléfono*",
-                  prefixText: '+54 ',
+                  prefixText: '+(54) ',
                 ),
                 keyboardType: TextInputType.phone,
                 onSaved: (value) {
                   person.phone = value;
                   _phoneNumber.requestFocus();
                 },
-                maxLength: 13,
+                maxLength: 10,
                 maxLengthEnforcement: MaxLengthEnforcement.none,
                 validator: _validatePhoneNumber,
                 // TextInputFormatters are applied in sequence.
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly,
                   // Fit the validating format.
-                  //_phoneNumberFormatter,
+                  // _phoneNumberFormatter,
                 ],
               ),
               sizedBoxSpace,
@@ -314,7 +326,6 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
                 textInputAction: TextInputAction.next,
                 focusNode: _password,
                 fieldKey: _passwordFieldKey,
-                helperText: "Incluye hasta 8 caracteres.",
                 labelText: "Contraseña*",
                 onFieldSubmitted: (value) {
                   setState(() {
@@ -331,7 +342,6 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
                   filled: true,
                   labelText: "Vuelve a escribir la contraseña*",
                 ),
-                maxLength: 8,
                 obscureText: true,
                 validator: _validatePassword,
                 onFieldSubmitted: (value) {
@@ -339,20 +349,33 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
                 },
               ),
               sizedBoxSpace,
-              Align(
-                alignment: Alignment.center,
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("ENVIAR"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("ENVIAR"),
-                    ),
-                  ],
-                ),
+              Row(
+                children: [
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _handleSubmitted,
+                        child: Text("Enviar"),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage(
+                                      newUser: false,
+                                    )),
+                          );
+                        },
+                        child: Text("Cancelar"),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               sizedBoxSpace,
               Text(
@@ -369,7 +392,7 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
 }
 
 /// Format incoming numeric text to fit the format of (###) ###-#### ##
-/*class _UsNumberTextInputFormatter extends TextInputFormatter {
+/*class _ArNumberTextInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -384,16 +407,16 @@ class SignUpPageFormState extends State<SignUpPageForm> with RestorationMixin {
       if (newValue.selection.end >= 1) selectionIndex++;
     }
     if (newTextLength >= 3) {
-      newText.write(newValue.text.substring(0, usedSubstringIndex = 4) + ') ');
+      newText.write(newValue.text.substring(0, usedSubstringIndex = 2) + ') ');
       if (newValue.selection.end >= 3) selectionIndex += 2;
     }
-    if (newTextLength >= 7) {
-      newText.write(newValue.text.substring(3, usedSubstringIndex = 6) + '-');
-      if (newValue.selection.end >= 6) selectionIndex++;
-    }
-    if (newTextLength >= 11) {
-      newText.write(newValue.text.substring(6, usedSubstringIndex = 10) + ' ');
+    if (newTextLength >= 10) {
+      newText.write(newValue.text.substring(5, usedSubstringIndex = 10) + '-');
       if (newValue.selection.end >= 10) selectionIndex++;
+    }
+    if (newTextLength >= 12) {
+      newText.write(newValue.text.substring(8, usedSubstringIndex = 12) + ' ');
+      if (newValue.selection.end >= 13) selectionIndex++;
     }
     // Dump the rest.
     if (newTextLength >= usedSubstringIndex) {

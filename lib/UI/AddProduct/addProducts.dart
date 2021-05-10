@@ -29,15 +29,22 @@ class _AddProductsPageState extends State<AddProductsPage> {
 
   @override
   Widget build(BuildContext context) {
+    const sizedBoxSpace = SizedBox(height: 24);
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text("Add The Product Details"),
-            Container(
-              child: TextField(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text("Agregue el producto que no encuentre en la lista."),
+      ),
+      body: Form(
+        //key: _formKey,
+        //autovalidateMode: AutovalidateMode.values[_autoValidateModeIndex.value],
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(children: [
+              sizedBoxSpace,
+              Text("Add The Product Details"),
+              TextFormField(
                 controller: productName,
                 decoration: InputDecoration(
                   hintText: "Name of Product",
@@ -46,9 +53,8 @@ class _AddProductsPageState extends State<AddProductsPage> {
                   ),
                 ),
               ),
-            ),
-            Container(
-              child: TextField(
+              sizedBoxSpace,
+              TextFormField(
                 controller: price,
                 decoration: InputDecoration(
                   hintText: "Product´price",
@@ -59,9 +65,8 @@ class _AddProductsPageState extends State<AddProductsPage> {
                   FilteringTextInputFormatter.digitsOnly
                 ],
               ),
-            ),
-            Container(
-              child: TextField(
+              sizedBoxSpace,
+              TextFormField(
                 controller: barcode,
                 decoration: InputDecoration(
                   hintText: "Product´barcode",
@@ -69,45 +74,44 @@ class _AddProductsPageState extends State<AddProductsPage> {
                       borderSide: BorderSide(color: Colors.white)),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  color: Colors.red,
-                  child: Text(
-                    "Cancel",
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                RaisedButton(
-                    color: Colors.red,
+              sizedBoxSpace,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
                     child: Text(
-                      "Add",
+                      "Cancel",
                     ),
                     onPressed: () {
-                      if (productName.text != null &&
-                          price != null &&
-                          barcode != null) {
-                        _repository
-                            .addProduct(
-                                productName.text, barcode.text, price.text)
-                            .then((_) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MyHomePage(),
-                            ),
-                          );
-                        });
-                      }
-                    }),
-              ],
-            )
-          ],
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ElevatedButton(
+                      child: Text(
+                        "Add",
+                      ),
+                      onPressed: () {
+                        if (productName.text != null &&
+                            price != null &&
+                            barcode != null) {
+                          _repository
+                              .addProduct(
+                                  productName.text, barcode.text, price.text)
+                              .then((_) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          });
+                        }
+                      }),
+                ],
+              )
+            ]),
+          ),
         ),
       ),
     );

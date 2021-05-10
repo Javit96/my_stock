@@ -122,15 +122,13 @@ class _ProductsListState extends State<ProductsList> {
                                 children: <Widget>[
                                   Column(
                                     children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Icon(
-                                              Icons.adjust,
-                                              color: Colors.amber,
-                                              size: 50,
-                                            )),
+                                      IconButton(
+                                        icon: const Icon(Icons.info),
+                                        color: Colors.amber,
+                                        iconSize: 35,
+                                        onPressed: () {
+                                          infoStock(productList[index]);
+                                        },
                                       ),
                                     ],
                                   ),
@@ -197,6 +195,18 @@ class _ProductsListState extends State<ProductsList> {
             }),
         onRefresh: _handleRefresh,
       ),
+    );
+  }
+
+  Future<void> infoStock(Products product) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(product.title),
+          content: Text("Quantity: "),
+        );
+      },
     );
   }
 
