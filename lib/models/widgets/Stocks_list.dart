@@ -124,7 +124,7 @@ class _StockListState extends State<StockList> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width -
-                                                  250,
+                                                  150,
                                               child: Text(
                                                 mapedProdu.entries
                                                     .elementAt(index)

@@ -137,7 +137,7 @@ class _ProductsListState extends State<ProductsList> {
                                       SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width -
-                                                250,
+                                                225,
                                         child: Text(
                                           productList[index].title,
                                           maxLines: 1,

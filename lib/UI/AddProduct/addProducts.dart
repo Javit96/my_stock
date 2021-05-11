@@ -1,8 +1,11 @@
+import 'dart:io';
+
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/services.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:flutter/material.dart';
+import 'package:my_stock/bloc/resources/userImagePicker.dart';
 import 'package:my_stock/models/classes/product.dart';
-
 import '../../main.dart';
 
 class AddProductsPage extends StatefulWidget {
@@ -21,11 +24,31 @@ class _AddProductsPageState extends State<AddProductsPage> {
   TextEditingController productName = new TextEditingController();
   TextEditingController price = new TextEditingController();
   TextEditingController barcode = new TextEditingController();
+  File _userImageFile;
+  List<Barcode> _barCode = [];
 
+  var result = "";
   Products _products;
   Repository _repository = Repository();
 
   bool completed;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
+
+  //barCode_Scanner
+  barCodeScanner() async {
+    FirebaseVisionImage myImage = FirebaseVisionImage.fromFile(_userImageFile);
+    BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
+    _barCode = await barcodeDetector.detectInImage(myImage);
+    result = "";
+    for (Barcode barcode in _barCode) {
+      setState(() {
+        result = barcode.displayValue;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +96,14 @@ class _AddProductsPageState extends State<AddProductsPage> {
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white)),
                 ),
+              ),
+              sizedBoxSpace,
+              Column(
+                children: [
+                  UserImagePicker(_pickedImage),
+                  Padding(
+                      padding: const EdgeInsets.all(16.0), child: Text(result)),
+                ],
               ),
               sizedBoxSpace,
               Row(
