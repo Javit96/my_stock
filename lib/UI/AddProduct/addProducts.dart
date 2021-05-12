@@ -3,10 +3,12 @@ import 'dart:math';
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:my_stock/bloc/resources/userImagePicker.dart';
 import 'package:my_stock/models/classes/product.dart';
+import 'package:my_stock/models/widgets/scanPage.dart';
 import '../../main.dart';
 
 class AddProductsPage extends StatefulWidget {
@@ -24,8 +26,9 @@ class AddProductsPage extends StatefulWidget {
 class _AddProductsPageState extends State<AddProductsPage> {
   TextEditingController productName = new TextEditingController();
   TextEditingController price = new TextEditingController();
-  TextEditingController barcode = new TextEditingController();
+  TextEditingController barcodeTextField = new TextEditingController();
   File _userImageFile;
+  bool resultSent = false;
   List<Barcode> _barCode = [];
 
   var result = "";
@@ -45,21 +48,10 @@ class _AddProductsPageState extends State<AddProductsPage> {
     _barCode = await barcodeDetector.detectInImage(myImage);
     result = "";
     for (Barcode barcode in _barCode) {
-      final BarcodeValueType valueType = barcode.valueType;
-
-      // See API reference for complete list of supported types
-      switch (valueType) {
-        case BarcodeValueType.wifi:
-          final String ssid = barcode.wifi.ssid;
-          final String password = barcode.wifi.password;
-          final BarcodeWiFiEncryptionType type = barcode.wifi.encryptionType;
-          break;
-        case BarcodeValueType.url:
-          final String title = barcode.url.title;
-          final String url = barcode.url.url;
-          print(url);
-          break;
-      }
+      setState(() {
+        result = barcode.displayValue;
+        print(result);
+      });
       barcodeDetector.close();
     }
   }
@@ -104,7 +96,7 @@ class _AddProductsPageState extends State<AddProductsPage> {
               ),
               sizedBoxSpace,
               TextFormField(
-                controller: barcode,
+                controller: barcodeTextField,
                 decoration: InputDecoration(
                   hintText: "Product´barcode",
                   enabledBorder: UnderlineInputBorder(
@@ -114,9 +106,26 @@ class _AddProductsPageState extends State<AddProductsPage> {
               sizedBoxSpace,
               Column(
                 children: [
-                  UserImagePicker(_pickedImage),
-                  Padding(
-                      padding: const EdgeInsets.all(16.0), child: Text(result)),
+                  ElevatedButton(
+                    child: Text('Scan product'),
+                    onPressed: () async {
+                      final barcode = await Navigator.of(context).push<Barcode>(
+                        MaterialPageRoute(
+                          builder: (c) {
+                            return ScanPage();
+                          },
+                        ),
+                      );
+                      if (barcode == null) {
+                        return;
+                      }
+
+                      setState(() {
+                        print(barcode.displayValue);
+                        barcodeTextField.text = barcode.displayValue;
+                      });
+                    },
+                  ),
                 ],
               ),
               sizedBoxSpace,
@@ -153,10 +162,10 @@ class _AddProductsPageState extends State<AddProductsPage> {
                       onPressed: () {
                         if (productName.text != null &&
                             price != null &&
-                            barcode != null) {
+                            barcodeTextField != null) {
                           _repository
-                              .addProduct(
-                                  productName.text, barcode.text, price.text)
+                              .addProduct(productName.text,
+                                  barcodeTextField.text, price.text)
                               .then((_) {
                             Navigator.push(
                               context,
