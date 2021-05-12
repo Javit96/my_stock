@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/services.dart';
@@ -44,9 +45,22 @@ class _AddProductsPageState extends State<AddProductsPage> {
     _barCode = await barcodeDetector.detectInImage(myImage);
     result = "";
     for (Barcode barcode in _barCode) {
-      setState(() {
-        result = barcode.displayValue;
-      });
+      final BarcodeValueType valueType = barcode.valueType;
+
+      // See API reference for complete list of supported types
+      switch (valueType) {
+        case BarcodeValueType.wifi:
+          final String ssid = barcode.wifi.ssid;
+          final String password = barcode.wifi.password;
+          final BarcodeWiFiEncryptionType type = barcode.wifi.encryptionType;
+          break;
+        case BarcodeValueType.url:
+          final String title = barcode.url.title;
+          final String url = barcode.url.url;
+          print(url);
+          break;
+      }
+      barcodeDetector.close();
     }
   }
 
@@ -105,6 +119,20 @@ class _AddProductsPageState extends State<AddProductsPage> {
                       padding: const EdgeInsets.all(16.0), child: Text(result)),
                 ],
               ),
+              sizedBoxSpace,
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                      child: Text(
+                        "Check",
+                      ),
+                      onPressed: () {
+                        barCodeScanner();
+                      },
+                    ),
+                  ]),
               sizedBoxSpace,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
