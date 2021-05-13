@@ -1,14 +1,10 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
 import 'package:my_stock/bloc/resources/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:my_stock/bloc/resources/userImagePicker.dart';
 import 'package:my_stock/models/classes/product.dart';
-import 'package:my_stock/models/widgets/scanPage.dart';
 import '../../main.dart';
 
 class AddProductsPage extends StatefulWidget {
@@ -31,7 +27,6 @@ class _AddProductsPageState extends State<AddProductsPage> {
   bool resultSent = false;
   List<Barcode> _barCode = [];
 
-  var result = "";
   Products _products;
   Repository _repository = Repository();
 
@@ -46,11 +41,9 @@ class _AddProductsPageState extends State<AddProductsPage> {
     FirebaseVisionImage myImage = FirebaseVisionImage.fromFile(_userImageFile);
     BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
     _barCode = await barcodeDetector.detectInImage(myImage);
-    result = "";
     for (Barcode barcode in _barCode) {
       setState(() {
-        result = barcode.displayValue;
-        print(result);
+        barcodeTextField.text = barcode.displayValue;
       });
       barcodeDetector.close();
     }
@@ -106,26 +99,7 @@ class _AddProductsPageState extends State<AddProductsPage> {
               sizedBoxSpace,
               Column(
                 children: [
-                  ElevatedButton(
-                    child: Text('Scan product'),
-                    onPressed: () async {
-                      final barcode = await Navigator.of(context).push<Barcode>(
-                        MaterialPageRoute(
-                          builder: (c) {
-                            return ScanPage();
-                          },
-                        ),
-                      );
-                      if (barcode == null) {
-                        return;
-                      }
-
-                      setState(() {
-                        print(barcode.displayValue);
-                        barcodeTextField.text = barcode.displayValue;
-                      });
-                    },
-                  ),
+                  UserImagePicker(_pickedImage),
                 ],
               ),
               sizedBoxSpace,
