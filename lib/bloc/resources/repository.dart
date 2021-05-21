@@ -37,7 +37,7 @@ class Repository {
 
   Future<Products> addProduct(
       String product, String barcode, String price) async {
-    apiProvider.addProduct(product, product, int.parse(price));
+    apiProvider.addProduct(product, barcode, int.parse(price));
   }
 
   Future<List<Products>> getProducts() async => await apiProvider.getProducts();
