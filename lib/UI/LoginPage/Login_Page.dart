@@ -41,8 +41,10 @@ class _LoginPageState extends State<LoginPage> {
     TextEditingController usernameText = new TextEditingController();
     TextEditingController passwordText = new TextEditingController();
 
-    return Container(
-      margin: EdgeInsets.only(top: 100, left: 20, right: 20),
+    return Scaffold(
+        body: Form(
+            child: Padding(
+      padding: EdgeInsets.only(top: 100, left: 20, right: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -140,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ),
-    );
+    )));
   }
 
   Widget getSignupPage() {
